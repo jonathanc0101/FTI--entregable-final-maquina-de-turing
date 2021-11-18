@@ -24,6 +24,9 @@ def main():
 
     grafo.settearNodoInicial(1)
 
+    print("Grafo: " + str(grafo))
+    grafo.imprimir()
+
     maquinaTuring = maquinaDeTuring(grafo,MiCintaYCabezal)
     while not maquinaTuring.ejecucionDetenida :
         maquinaTuring.cinta.imprimirCintaYCabezal()
