@@ -1,4 +1,5 @@
 import time
+from csv import reader
 
 class caracteresEspeciales():
     """permite un facil acceso a los caracteres especiales usados en la teoria de la computación."""
@@ -290,7 +291,7 @@ class GrafoTuring:
                     self.nodoActual = trayectoria[0]
                     return trayectoria[2]
         else:
-            raise Exception("Error: Error del programa, no se puede seguir la ejecución de la máquina de Turing, no hay salidas del nodo con el símbolo indicado")
+            raise Exception("Error: Error del programa, no se puede seguir la ejecución de la máquina de Turing, no hay salidas del nodo con el símbolo indicado, Salidas: " + str(trayectoriasPosibles))
 
     def imprimir(self):
         for vertice in self.listaDeVertices:
@@ -339,5 +340,62 @@ class maquinaDeTuring:
             
             i += 1
 
+    def ejecutarHastaFinalConsola(self):
+        while not self.ejecucionDetenida :
+            self.cinta.imprimirCintaYCabezal()
+            self.pasarUnTiempo()
+            time.sleep(0.1)
+
+    def cargarGrafoListaTrayectorias(self, filename):
+        """Carga un grafo a partir de un archivo csv que contiene una lista de trayectorias"""
+        cinta = CintayCabezal()
+        grafo = GrafoTuring()
+
+        rows = []
+
+        with open(filename, 'r') as csvfile:
+            # creating a csv reader object
+            csvreader = reader(csvfile, delimiter = ';', lineterminator = ";;;")
+            
+            # extracting each data row one by one
+            rows = [row for row in csvreader]
+    
+        alfabeto = rows[1]
+        textoCinta = rows[3][0]
+        posCabezal = int(rows[5][0])
+        transiciones = rows[8:]
+
+        ##cargamos la cinta
+        cinta.universoDeSimbolos = alfabeto
+        cinta.cinta = textoCinta 
+        cinta.pos = posCabezal
+
+        #grafo
+        for transicion in transiciones:
+            for i in range (len(transicion)):
+                # csv no soporta los simbolos delta ni lambda
+                transicion[i] = transicion[i].replace("delta", caracteresEspeciales().delta)
+                transicion[i] = transicion[i].replace("lambda", caracteresEspeciales().lambd)
+                print("DEBUG: " + str(transicion[i]))
+            transicion[0] = int(transicion[0])
+            transicion[1] = int(transicion[1])
+
+            ##si no es una accion elemental es un simbolo
+            simbolosYAccionesPosibles = ["R", "L", "D", caracteresEspeciales().lambd]
+            if transicion[3][0] not in simbolosYAccionesPosibles and transicion[3] != "END":
+                transicion[3] = "".join(["S", transicion[3]])
+
+            print("DEBUG: transicion: "+ str(transicion))            
+            grafo.insertar(*(transicion[0:4]))
+        
+        grafo.settearNodoInicial(1)
+        
+        self.cinta = cinta
+        self.grafo = grafo
+
+        # print("DEBUG: alfabeto :" + str(alfabeto))
+        # print("DEBUG: cinta : " + str(cinta))
+        # print("DEBUG: pos cabezal : " + str(posCabezal))
+        # print("DEBUG: transiciones : " + str(transiciones))
 
 

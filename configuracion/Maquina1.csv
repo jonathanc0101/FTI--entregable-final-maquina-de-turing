@@ -1,0 +1,16 @@
+#alfabeto;;;;
+a;b;c;d;*
+#cinta;;;;
+abababcbcbca*b*ababababb*abababcbcbca*b*ababababb*;;;;
+#posicion cabezal;;;;
+0;;;;
+#Tabla (estados y transiciones);;;;
+#estadoA;#estadoB;#simbolo;#accion;
+1;2;lambda;*;
+2;3;lambda;R;
+3;2;!delta;D;
+3;4;delta;lambda;
+4;5;lambda;L;
+5;4;!*;lambda;
+5;6;*;D;
+6;7;lambda;END;
