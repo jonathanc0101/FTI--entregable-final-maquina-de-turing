@@ -12,3 +12,6 @@ dibujado el diagrama de turing y grafo correspondiente y detallada la traduccion
 
 Para poder usar el programa de interfaz y no de testeo se requiere la libreria Tkinter con la version 8.6 en adelante
 ![primera versión de la interfaz](https://github.com/jonathanc0101/FTI--entregable-final-maquina-de-turing/blob/imagenes-y-clutter/imagenes/interfaz%202021%2011%2019.PNG)
+
+Ejemplo de funcionamiento semi manual (presionando la tecla espacio repetidamente)
+![segunda versión de la interfaz, ejemplo](https://github.com/jonathanc0101/FTI--entregable-final-maquina-de-turing/blob/imagenes-y-clutter/imagenes/funcionamiento%20espacios.gif)
