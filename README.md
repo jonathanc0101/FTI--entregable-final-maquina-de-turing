@@ -11,4 +11,4 @@ El programa cargado en el archivo test.py es el que se muestra dentro del archiv
 dibujado el diagrama de turing y grafo correspondiente y detallada la traduccion desde diagrama de turing a grafo, incluido el formato de las aristas.
 
 Para poder usar el programa de interfaz y no de testeo se requiere la libreria Tkinter con la version 8.6 en adelante
-!a(https://github.com/jonathanc0101/FTI--entregable-final-maquina-de-turing/blob/master/imagenes/interfaz%202021%2011%2019.PNG?raw=true)
+![primera versión de la interfaz](https://github.com/jonathanc0101/FTI--entregable-final-maquina-de-turing/blob/imagenes-y-clutter/imagenes/interfaz%202021%2011%2019.PNG)
