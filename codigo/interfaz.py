@@ -105,22 +105,22 @@ class interfazSimulador:
 
         ##nuestra label de cinta de la maquina de turing
         self.textoCinta = StringVar()
-        ttk.Label(self.mainframe, textvariable=self.textoCinta, font = ("Lucida Console", 20)).grid(column=0, row=2, sticky=(E))
+        ttk.Label(self.mainframe, textvariable=self.textoCinta, font = ("Lucida Console", 20)).grid(column=1, row=2, sticky=(E))
         self.textoCinta.set(self.maquina.obtenerStringCintaActualConOffset(miOffset))
 
 
         ##button // avanzar un momento
         self.botonAvanzar = ttk.Button(self.mainframe, text="Avanzar un momento en el tiempo", command=self.avanzarUnMomento)
-        self.botonAvanzar.grid(column=0, row=3, sticky=W)
+        self.botonAvanzar.grid(column=0, row=3, sticky=(N, S, W, E), columnspan=1)
         ##button 2//avanzar hasta el final
         self.botonAvanzarFinal =ttk.Button(self.mainframe, text="Avanzar hasta el final", command=self.avanzarHastaElFinal)
-        self.botonAvanzarFinal.grid(column=0, row=4, sticky=W)
+        self.botonAvanzarFinal.grid(column=0, row=4, sticky=(N, S, W, E), columnspan=1)
         ##button 3//cargar archivo de turing
         self.botonSeleccionarArchivo = ttk.Button(self.mainframe, text="Seleccionar archivo de configuración", command=self.seleccionarArchivo)
-        self.botonSeleccionarArchivo.grid(column=0, row=5, sticky=W)
+        self.botonSeleccionarArchivo.grid(column=0, row=5, sticky=(N, S, W, E), columnspan=1)
         ##button 4//reiniciar maquina
         self.botonReiniciar = ttk.Button(self.mainframe, text="Reiniciar", command=self.reiniciarMaquina)
-        self.botonReiniciar.grid(column=0, row=6, sticky=W)
+        self.botonReiniciar.grid(column=0, row=6, sticky=(N, S, W, E), columnspan=1)
         
         ##polishing
         self.mainframe.columnconfigure(0,weight=0)
@@ -196,4 +196,6 @@ class interfazSimulador:
 def main():
     ventana = interfazSimulador()
 
-main()
+
+if __name__ == "__main__":
+    main()
