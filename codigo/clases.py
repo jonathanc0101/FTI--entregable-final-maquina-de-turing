@@ -1,5 +1,6 @@
 import time
 from csv import reader
+from tkinter import Misc
 
 class caracteresEspeciales():
     """permite un facil acceso a los caracteres especiales usados en la teoria de la computación."""
@@ -200,9 +201,35 @@ class CintayCabezal:
         raise Exception("Error: No es posible seguir con la ejecución del programa dada la detección de un bucle infinito.")
 
     def imprimirCintaYCabezal(self):
-        print(self.pos*' ' + "▾")
+        print("".join([self.pos*' ', "▾"]))
         print(self.cinta)
 
+    def __str__(self) -> str:
+        miStr = "".join([self.pos*' ', "▾", "\n", self.cinta])
+        return(miStr)
+
+    def stringRecortado(self,offset) -> str:
+        """retorna la cinta y el cabezal dado un offset"""
+        miStr = str(self.cinta)
+        posActual = self.pos
+
+        izquierda = 0
+        derecha = len(miStr)
+
+        if not(posActual - offset < 0):
+            izquierda = posActual - offset 
+        if not(posActual + offset > len(miStr) - 1):
+            dereha = posActual + offset
+
+        if posActual < offset:
+            espaciosAntesDeCinta = offset - posActual
+        else:
+            espaciosAntesDeCinta = 0
+
+        miStr = "".join([offset*' ', "▾", "\n", ' '*espaciosAntesDeCinta,miStr[izquierda:derecha]])
+        
+        return miStr
+            
 class GrafoTuring:
     """modela la clase grafo con el uso de listas de
     adyacencia"""
@@ -376,7 +403,7 @@ class maquinaDeTuring:
                 # csv no soporta los simbolos delta ni lambda
                 transicion[i] = transicion[i].replace("delta", caracteresEspeciales().delta)
                 transicion[i] = transicion[i].replace("lambda", caracteresEspeciales().lambd)
-                print("DEBUG: " + str(transicion[i]))
+                # print("DEBUG: " + str(transicion[i]))
             transicion[0] = int(transicion[0])
             transicion[1] = int(transicion[1])
 
@@ -385,7 +412,7 @@ class maquinaDeTuring:
             if transicion[3][0] not in simbolosYAccionesPosibles and transicion[3] != "END":
                 transicion[3] = "".join(["S", transicion[3]])
 
-            print("DEBUG: transicion: "+ str(transicion))            
+            # print("DEBUG: transicion: "+ str(transicion))            
             grafo.insertar(*(transicion[0:4]))
         
         grafo.settearNodoInicial(1)
@@ -393,9 +420,7 @@ class maquinaDeTuring:
         self.cinta = cinta
         self.grafo = grafo
 
-        # print("DEBUG: alfabeto :" + str(alfabeto))
-        # print("DEBUG: cinta : " + str(cinta))
-        # print("DEBUG: pos cabezal : " + str(posCabezal))
-        # print("DEBUG: transiciones : " + str(transiciones))
+    def obtenerStringCintaActualConOffset(self, offset):
+        return self.cinta.stringRecortado(offset)
 
 

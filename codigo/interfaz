@@ -1,0 +1,56 @@
+from tkinter import *
+from tkinter import ttk
+
+from clases import maquinaDeTuring
+
+miOffset = 15
+
+def avanzarUnMomento(*args):
+    maquina.pasarUnTiempo()
+    textoCinta.set(maquina.obtenerStringCintaActualConOffset(miOffset))
+    
+
+def avanzarHastaElFinal(*args):
+    while(not maquina.ejecucionDetenida):
+        maquina.pasarUnTiempo()
+        textoCinta.set(maquina.obtenerStringCintaActualConOffset(miOffset))
+
+
+direccionArchivo = '.\configuracion\Maquina1.csv'
+maquina = maquinaDeTuring()
+maquina.cargarGrafoListaTrayectorias(direccionArchivo)
+
+
+root = Tk()
+root.title("Simulador de máquina de Turing")
+
+##si cambiamos el tamaño de fuente a algo distinto de 20 hay que ajustar el coeficiente
+ancho = int((len(maquina.cinta.cinta) + miOffset) * (18.5))
+root.geometry("".join([str(ancho),"x","140"]))
+root.resizable(0, 0)
+
+##frame principal donde van las cosas
+mainframe = ttk.Frame(root, padding="3 3 12 12")
+mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
+root.columnconfigure(0, weight=1)
+root.rowconfigure(0, weight=1)
+
+##nuestra cinta de la maquina de turing
+textoCinta = StringVar()
+ttk.Label(mainframe, textvariable=textoCinta, font = ("Lucida Console", 20)).grid(column=0, row=2, sticky=(W, E))
+textoCinta.set(maquina.obtenerStringCintaActualConOffset(miOffset))
+
+
+##button // evento
+ttk.Button(mainframe, text="Avanzar un momento en el tiempo", command=avanzarUnMomento).grid(column=0, row=3, sticky=W)
+##button 2//avanzar hasta el final
+ttk.Button(mainframe, text="Avanzar hasta el final", command=avanzarHastaElFinal).grid(column=0, row=4, sticky=W)
+
+
+##polishing
+for child in mainframe.winfo_children(): 
+    child.grid_configure(padx=5, pady=5)
+
+# root.bind("<Return>", avanzarUnMomento)
+
+root.mainloop()
