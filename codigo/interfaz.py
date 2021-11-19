@@ -1,10 +1,64 @@
 
-from tkinter import Tk, StringVar, N, W, E, S, ttk
+from tkinter import Tk, StringVar, N, W, E, S, ttk, Toplevel, Label
 from tkinter.filedialog import askopenfilename
 
 from clases import maquinaDeTuring
 
 miOffset = 15
+
+class CreateToolTip(object):
+    """
+    create a tooltip for a given widget
+    """
+    def __init__(self, widget, text='widget info'):
+        self.waittime = 500     #miliseconds
+        self.wraplength = 180   #pixels
+        self.widget = widget
+        self.text = text
+        self.widget.bind("<Enter>", self.enter)
+        self.widget.bind("<Leave>", self.leave)
+        self.widget.bind("<ButtonPress>", self.leave)
+        self.id = None
+        self.tw = None
+
+    def enter(self, event=None):
+        self.schedule()
+
+    def leave(self, event=None):
+        self.unschedule()
+        self.hidetip()
+
+    def schedule(self):
+        self.unschedule()
+        self.id = self.widget.after(self.waittime, self.showtip)
+
+    def unschedule(self):
+        id = self.id
+        self.id = None
+        if id:
+            self.widget.after_cancel(id)
+
+    def showtip(self, event=None):
+        x = y = 0
+        x, y, cx, cy = self.widget.bbox("insert")
+        x += self.widget.winfo_rootx() + 25
+        y += self.widget.winfo_rooty() + 20
+        # creates a toplevel window
+        self.tw = Toplevel(self.widget)
+        # Leaves only the label and removes the app window
+        self.tw.wm_overrideredirect(True)
+        self.tw.wm_geometry("+%d+%d" % (x, y))
+        label = Label(self.tw, text=self.text, justify='left',
+                       background="#ffffff", relief='solid', borderwidth=1,
+                       wraplength = self.wraplength)
+        label.pack(ipadx=1)
+
+    def hidetip(self):
+        tw = self.tw
+        self.tw= None
+        if tw:
+            tw.destroy()
+
 
 class interfazSimulador:
 
@@ -19,6 +73,8 @@ class interfazSimulador:
 
         self.inicializarBindEventos()
 
+        self.aniadirTooltips()
+        
         self.root.mainloop()
 
     def inicializarInterfaz(self):
@@ -53,15 +109,19 @@ class interfazSimulador:
         self.textoCinta.set(self.maquina.obtenerStringCintaActualConOffset(miOffset))
 
 
-        ##button // evento
-        ttk.Button(self.mainframe, text="Avanzar un momento en el tiempo", command=self.avanzarUnMomento).grid(column=0, row=3, sticky=W)
+        ##button // avanzar un momento
+        self.botonAvanzar = ttk.Button(self.mainframe, text="Avanzar un momento en el tiempo", command=self.avanzarUnMomento)
+        self.botonAvanzar.grid(column=0, row=3, sticky=W)
         ##button 2//avanzar hasta el final
-        ttk.Button(self.mainframe, text="Avanzar hasta el final", command=self.avanzarHastaElFinal).grid(column=0, row=4, sticky=W)
+        self.botonAvanzarFinal =ttk.Button(self.mainframe, text="Avanzar hasta el final", command=self.avanzarHastaElFinal)
+        self.botonAvanzarFinal.grid(column=0, row=4, sticky=W)
         ##button 3//cargar archivo de turing
-        ttk.Button(self.mainframe, text="Seleccionar archivo de configuración", command=self.seleccionarArchivo).grid(column=0, row=5, sticky=W)
+        self.botonSeleccionarArchivo = ttk.Button(self.mainframe, text="Seleccionar archivo de configuración", command=self.seleccionarArchivo)
+        self.botonSeleccionarArchivo.grid(column=0, row=5, sticky=W)
         ##button 4//reiniciar maquina
-        ttk.Button(self.mainframe, text="Reiniciar", command=self.reiniciarMaquina).grid(column=0, row=6, sticky=W)
-
+        self.botonReiniciar = ttk.Button(self.mainframe, text="Reiniciar", command=self.reiniciarMaquina)
+        self.botonReiniciar.grid(column=0, row=6, sticky=W)
+        
         ##polishing
         self.mainframe.columnconfigure(0,weight=0)
 
@@ -126,6 +186,12 @@ class interfazSimulador:
     def enfocarRoot(self,*args):
         if self.root.focus_get() != self.root:
             self.root.focus()
+
+    def aniadirTooltips(self, wrapLengthVar=200):
+        CreateToolTip(self.botonAvanzar, "Espacio")
+        CreateToolTip(self.botonAvanzarFinal, "Shift + Espacio")
+
+        CreateToolTip(self.botonReiniciar, "Shift + R")
 
 def main():
     ventana = interfazSimulador()
