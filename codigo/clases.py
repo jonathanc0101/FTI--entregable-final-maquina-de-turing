@@ -19,6 +19,7 @@ class CintayCabezal:
         self.pos = pos ##nos indica la posicion del cabezal
 
         self.ejecucionDetenida = False
+        self.accionAnterior = ""
 
     def comprobarInicializacion(self):
         assert(self.universoDeSimbolos is not None), "CintayCabezal: no hay self.universoDeSimbolos"
@@ -80,6 +81,9 @@ class CintayCabezal:
             self.ejecutarInstruccion(instruccion)
 
     def ejecutarInstruccion(self, instruccion):
+        if not self.ejecucionDetenida:
+            self.accionAnterior = instruccion
+
         """ejecuta la instrucción recibida"""
         if instruccion == "R":
             # print("DEBUG: R")
@@ -229,7 +233,23 @@ class CintayCabezal:
         miStr = "".join([offset*' ', "▾", "\n", ' '*espaciosAntesDeCinta,miStr[izquierda:derecha]])
         
         return miStr
-            
+
+    def ultimaAccion(self):
+
+        if self.accionAnterior == "" or self.accionAnterior is None:
+            return ""
+
+        if self.accionAnterior in ["L", "R"] or self.accionAnterior[0] in ["L", "R"]:
+            return self.accionAnterior
+        elif self.accionAnterior == "D":
+            return self.chars.delta
+        elif self.accionAnterior == self.chars.lambd:
+            return ""
+        elif self.accionAnterior == "END":
+            return self.accionAnterior
+        else:
+            return ""
+
 class GrafoTuring:
     """modela la clase grafo con el uso de listas de
     adyacencia"""
@@ -358,6 +378,10 @@ class maquinaDeTuring:
         else:
             print("Ejecución detenida")
 
+        if not self.ejecucionDetenida and not self.cinta is None:
+            if self.cinta.ultimaAccion() == "":
+                self.pasarUnTiempo()
+
     def pasarNTiempos(self, n):
         
         i = 0
@@ -423,4 +447,15 @@ class maquinaDeTuring:
     def obtenerStringCintaActualConOffset(self, offset):
         return self.cinta.stringRecortado(offset)
 
+    def estado(self) -> str:
+        if self.ejecucionDetenida:
+            return "Programa detenido"
+        else:
+            return "Ejecutando programa"
+
+    def ultimaAccion(self):
+        if not self.cinta is None:
+            return self.cinta.ultimaAccion()
+        else:
+            return ""
 
