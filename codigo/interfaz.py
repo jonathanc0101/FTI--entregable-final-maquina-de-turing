@@ -1,5 +1,6 @@
 
 from tkinter import Tk, StringVar, N, W, E, S, ttk, Toplevel, Label
+from tkinter.constants import LEFT
 from tkinter.filedialog import askopenfilename
 
 from clases import maquinaDeTuring
@@ -84,11 +85,11 @@ class interfazSimulador:
         ##si cambiamos el tamaño de fuente a algo distinto de 20 hay que ajustar el coeficiente
         ancho = int((len(self.maquina.cinta.cinta) + miOffset) * (18.5))
 
-        self.root.geometry("".join([str(ancho),"x",str(300)]))
+        self.root.geometry("".join([str(ancho),"x",str(320)]))
         self.root.resizable(0,0)
 
         ##frame principal donde van las cosas
-        self.mainframe = ttk.Frame(self.root, padding="3 3 12 12")
+        self.mainframe = ttk.Frame(self.root, padding="12 12 12 12")
         self.mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
@@ -103,24 +104,34 @@ class interfazSimulador:
         ttk.Label(self.mainframe, textvariable=self.textoUltimaAccion, font = ("Lucida Console", 10)).grid(column=0, row=1, sticky=(N, W, E))
         self.actualizarLabelUltimaAccion()
 
+        ##nuestro label de posición cabezal
+        self.textoPosicionCabezal = StringVar()
+        ttk.Label(self.mainframe,textvar = self.textoPosicionCabezal , font = ("Lucida Console", 10)).grid(column=0, row=2, sticky =(N, W, E))
+        self.actualizarLabelPosicionCabezal()
+
+        ##nuestro label de alfabeto
+        self.textoAlfabeto = StringVar()
+        ttk.Label(self.mainframe,textvar = self.textoAlfabeto, font = ("Lucida Console", 10)).grid(column=0, row=3, sticky =(N,W,E,S))
+        self.actualizarLabelAlfabeto()
+
         ##nuestra label de cinta de la maquina de turing
         self.textoCinta = StringVar()
-        ttk.Label(self.mainframe, textvariable=self.textoCinta, font = ("Lucida Console", 20)).grid(column=1, row=2, sticky=(E))
-        self.textoCinta.set(self.maquina.obtenerStringCintaActualConOffset(miOffset))
-
+        ttk.Label(self.mainframe, textvariable=self.textoCinta, font = ("Lucida Console", 20)).grid(column=1, row=3, sticky=(W,E), columnspan=1)
+        self.actualizarTextoCinta()
+        
 
         ##button // avanzar un momento
         self.botonAvanzar = ttk.Button(self.mainframe, text="Avanzar un momento en el tiempo", command=self.avanzarUnMomento)
-        self.botonAvanzar.grid(column=0, row=3, sticky=(N, S, W, E), columnspan=1)
+        self.botonAvanzar.grid(column=0, row=4, sticky=(N, S, W, E), columnspan=1)
         ##button 2//avanzar hasta el final
         self.botonAvanzarFinal =ttk.Button(self.mainframe, text="Avanzar hasta el final", command=self.avanzarHastaElFinal)
-        self.botonAvanzarFinal.grid(column=0, row=4, sticky=(N, S, W, E), columnspan=1)
+        self.botonAvanzarFinal.grid(column=0, row=5, sticky=(N, S, W, E), columnspan=1)
         ##button 3//cargar archivo de turing
         self.botonSeleccionarArchivo = ttk.Button(self.mainframe, text="Seleccionar archivo de configuración", command=self.seleccionarArchivo)
-        self.botonSeleccionarArchivo.grid(column=0, row=5, sticky=(N, S, W, E), columnspan=1)
+        self.botonSeleccionarArchivo.grid(column=0, row=6, sticky=(N, S, W, E), columnspan=1)
         ##button 4//reiniciar maquina
         self.botonReiniciar = ttk.Button(self.mainframe, text="Reiniciar", command=self.reiniciarMaquina)
-        self.botonReiniciar.grid(column=0, row=6, sticky=(N, S, W, E), columnspan=1)
+        self.botonReiniciar.grid(column=0, row=7, sticky=(N, S, W, E), columnspan=1)
         
         ##polishing
         self.mainframe.columnconfigure(0,weight=0)
@@ -139,20 +150,26 @@ class interfazSimulador:
     def avanzarUnMomento(self,*args):
         self.maquina.pasarUnTiempo()
 
-        self.actualizarTextoCinta()
-
-        self.actualizarTextoEstado()
-
-        self.actualizarLabelUltimaAccion()
+        self.actualizarMaquina()
 
     def avanzarHastaElFinal(self,*args):
         while(not self.maquina.ejecucionDetenida):
             self.maquina.pasarUnTiempo()
             self.textoCinta.set(self.maquina.obtenerStringCintaActualConOffset(miOffset))
 
-        self.actualizarTextoEstado()
-        self.actualizarLabelUltimaAccion()
+        self.actualizarMaquina()
 
+    def actualizarMaquina(self):
+        self.actualizarTextoCinta()
+
+        self.actualizarTextoEstado()
+
+        self.actualizarLabelUltimaAccion()
+        
+        self.actualizarLabelAlfabeto()
+        
+        self.actualizarLabelPosicionCabezal()
+        
     def actualizarTextoEstado(self):
         self.textoEstado.set(self.maquina.estado())
 
@@ -161,6 +178,12 @@ class interfazSimulador:
 
     def actualizarLabelUltimaAccion(self):
         self.textoUltimaAccion.set("".join(["ultima acción: ",self.maquina.ultimaAccion()]))
+
+    def actualizarLabelAlfabeto(self):
+        self.textoAlfabeto.set("".join([ "Alfabeto: " ,str(self.maquina.alfabeto())]))
+    
+    def actualizarLabelPosicionCabezal(self):
+        self.textoPosicionCabezal.set("".join([ "posición: " ,str(self.maquina.posicionCabezal())]))
 
     def seleccionarArchivo(self,*args):
         direccionArchivoNueva = askopenfilename() # show an "Open" dialog box and return the path to the selected file
@@ -171,7 +194,9 @@ class interfazSimulador:
             self.direccionArchivo = direccionArchivoNueva
             self.reiniciarMaquina()
             # print("DEBUG: reiniciando maquina")
-            
+        
+        self.actualizarMaquina()
+
     # maquina.cargarGrafoListaTrayectorias(
     def reiniciarMaquina(self,*args):
         self.maquina = None

@@ -234,7 +234,7 @@ class CintayCabezal:
         
         return miStr
 
-    def ultimaAccion(self):
+    def ultimaAccion(self) -> str:
 
         if self.accionAnterior == "" or self.accionAnterior is None:
             return ""
@@ -383,7 +383,6 @@ class maquinaDeTuring:
                 self.pasarUnTiempo()
 
     def pasarNTiempos(self, n):
-        
         i = 0
         while i <= n and not self.ejecucionDetenida:
             
@@ -444,7 +443,7 @@ class maquinaDeTuring:
         self.cinta = cinta
         self.grafo = grafo
 
-    def obtenerStringCintaActualConOffset(self, offset):
+    def obtenerStringCintaActualConOffset(self, offset) -> str:
         return self.cinta.stringRecortado(offset)
 
     def estado(self) -> str:
@@ -453,9 +452,14 @@ class maquinaDeTuring:
         else:
             return "Ejecutando programa"
 
-    def ultimaAccion(self):
+    def ultimaAccion(self) -> str:
         if not self.cinta is None:
             return self.cinta.ultimaAccion()
         else:
             return ""
 
+    def alfabeto(self) -> str:
+        return str(self.cinta.universoDeSimbolos).replace(",", " ").replace("[","").replace("]","").replace("'", "")
+
+    def posicionCabezal(self) -> str:
+        return str(self.cinta.pos)
