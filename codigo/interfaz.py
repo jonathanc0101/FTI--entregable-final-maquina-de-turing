@@ -1,4 +1,4 @@
-from os import truncate
+
 from tkinter import Tk, StringVar, N, W, E, S, ttk
 from tkinter.filedialog import askopenfilename
 
@@ -6,115 +6,128 @@ from clases import maquinaDeTuring
 
 miOffset = 15
 
-def avanzarUnMomento(*args):
-    maquina.pasarUnTiempo()
+class interfazSimulador:
 
-    actualizarTextoCinta()
-
-    actualizarTextoEstado()
-
-    actualizarLabelUltimaAccion()
-
-def avanzarHastaElFinal(*args):
-    while(not maquina.ejecucionDetenida):
-        maquina.pasarUnTiempo()
-        textoCinta.set(maquina.obtenerStringCintaActualConOffset(miOffset))
-
-    actualizarTextoEstado()
-    actualizarLabelUltimaAccion()
-
-def actualizarTextoEstado():
-    textoEstado.set(maquina.estado())
-
-def actualizarTextoCinta():
-    textoCinta.set(maquina.obtenerStringCintaActualConOffset(miOffset))
-
-def actualizarLabelUltimaAccion():
-    textoUltimaAccion.set("".join(["ultima acción: ",maquina.ultimaAccion()]))
-
-def seleccionarArchivo(*args):
-    direccionArchivoNueva = askopenfilename() # show an "Open" dialog box and return the path to the selected file
-    print("DEBUG: " + str(direccionArchivoNueva == ""))
-    
-    if direccionArchivoNueva != "":
-        direccionArchivo = direccionArchivoNueva
+    def __init__(self) -> None:
         
-        reiniciarMaquina()
+        self.direccionArchivo = '.\configuracion\Maquina1.csv'
+        
+        self.maquina = maquinaDeTuring()
+        self.maquina.cargarGrafoListaTrayectorias(self.direccionArchivo)
+        
+        self.inicializarInterfaz()
 
-def reiniciarMaquina(*args):
-    maquina.ejecucionDetenida = False
-    maquina.cargarGrafoListaTrayectorias(direccionArchivo)
+        self.inicializarBindEventos()
 
-    actualizarTextoCinta()
-    actualizarTextoEstado()
-    actualizarLabelUltimaAccion()
+        self.root.mainloop()
 
-def enfocarRoot(*args):
-    if root.focus_get() != root:
-        root.focus()
+    def inicializarInterfaz(self):
+        self.root = Tk()
+        self.root.title("Simulador de máquina de Turing")
+        
+        ##si cambiamos el tamaño de fuente a algo distinto de 20 hay que ajustar el coeficiente
+        ancho = int((len(self.maquina.cinta.cinta) + miOffset) * (18.5))
 
+        self.root.geometry("".join([str(ancho),"x",str(300)]))
+        self.root.resizable(0,0)
 
-direccionArchivo = '.\configuracion\Maquina1.csv'
-maquina = maquinaDeTuring()
-maquina.cargarGrafoListaTrayectorias(direccionArchivo)
+        ##frame principal donde van las cosas
+        self.mainframe = ttk.Frame(self.root, padding="3 3 12 12")
+        self.mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
+        self.root.columnconfigure(0, weight=1)
+        self.root.rowconfigure(0, weight=1)
 
+        ##nuestro label de estado
+        self.textoEstado = StringVar()
+        ttk.Label(self.mainframe, textvariable=self.textoEstado, font = ("Lucida Console", 12)).grid(column=0, row=0, sticky=(N, W, E))
+        self.textoEstado.set(self.maquina.estado())
 
-root = Tk()
-root.title("Simulador de máquina de Turing")
+        ##nuestro label de ultima cosa hecha
+        self.textoUltimaAccion = StringVar()
+        ttk.Label(self.mainframe, textvariable=self.textoUltimaAccion, font = ("Lucida Console", 10)).grid(column=0, row=1, sticky=(N, W, E))
+        self.actualizarLabelUltimaAccion()
 
-##si cambiamos el tamaño de fuente a algo distinto de 20 hay que ajustar el coeficiente
-ancho = int((len(maquina.cinta.cinta) + miOffset) * (18.5))
-
-root.geometry("".join([str(ancho),"x",str(300)]))
-root.resizable(0,0)
-
-
-##frame principal donde van las cosas
-mainframe = ttk.Frame(root, padding="3 3 12 12")
-mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
-root.columnconfigure(0, weight=1)
-root.rowconfigure(0, weight=1)
-
-##nuestro label de estado
-textoEstado = StringVar()
-ttk.Label(mainframe, textvariable=textoEstado, font = ("Lucida Console", 12)).grid(column=0, row=0, sticky=(N, W, E))
-textoEstado.set(maquina.estado())
-
-##nuestro label de ultima cosa hecha
-textoUltimaAccion = StringVar()
-ttk.Label(mainframe, textvariable=textoUltimaAccion, font = ("Lucida Console", 10)).grid(column=0, row=1, sticky=(N, W, E))
-actualizarLabelUltimaAccion()
-
-##nuestra label de cinta de la maquina de turing
-textoCinta = StringVar()
-ttk.Label(mainframe, textvariable=textoCinta, font = ("Lucida Console", 20)).grid(column=0, row=2, sticky=(E))
-textoCinta.set(maquina.obtenerStringCintaActualConOffset(miOffset))
+        ##nuestra label de cinta de la maquina de turing
+        self.textoCinta = StringVar()
+        ttk.Label(self.mainframe, textvariable=self.textoCinta, font = ("Lucida Console", 20)).grid(column=0, row=2, sticky=(E))
+        self.textoCinta.set(self.maquina.obtenerStringCintaActualConOffset(miOffset))
 
 
+        ##button // evento
+        ttk.Button(self.mainframe, text="Avanzar un momento en el tiempo", command=self.avanzarUnMomento).grid(column=0, row=3, sticky=W)
+        ##button 2//avanzar hasta el final
+        ttk.Button(self.mainframe, text="Avanzar hasta el final", command=self.avanzarHastaElFinal).grid(column=0, row=4, sticky=W)
+        ##button 3//cargar archivo de turing
+        ttk.Button(self.mainframe, text="Seleccionar archivo de configuración", command=self.seleccionarArchivo).grid(column=0, row=5, sticky=W)
+        ##button 4//reiniciar maquina
+        ttk.Button(self.mainframe, text="Reiniciar", command=self.reiniciarMaquina).grid(column=0, row=6, sticky=W)
 
-##button // evento
-ttk.Button(mainframe, text="Avanzar un momento en el tiempo", command=avanzarUnMomento).grid(column=0, row=3, sticky=W)
-##button 2//avanzar hasta el final
-ttk.Button(mainframe, text="Avanzar hasta el final", command=avanzarHastaElFinal).grid(column=0, row=4, sticky=W)
-##button 3//cargar archivo de turing
-ttk.Button(mainframe, text="Seleccionar archivo de configuración", command=seleccionarArchivo).grid(column=0, row=5, sticky=W)
-##button 4//reiniciar maquina
-ttk.Button(mainframe, text="Reiniciar", command=reiniciarMaquina).grid(column=0, row=6, sticky=W)
+        ##polishing
+        self.mainframe.columnconfigure(0,weight=0)
 
+        for child in self.mainframe.winfo_children(): 
+            child.grid_configure(padx=5, pady=5)
 
-##polishing
-mainframe.columnconfigure(0,weight=0)
+    def inicializarBindEventos(self):
+        self.root.bind("<space>", self.avanzarUnMomento)
+        self.root.bind("<Shift_L><space>",self.avanzarHastaElFinal)
+        self.root.bind("<Button-1>", self.enfocarRoot)
 
+        self.root.bind("<Shift_L>R",self.reiniciarMaquina)
+        self.root.bind("<Shift_L>r",self.reiniciarMaquina)
 
+    def avanzarUnMomento(self,*args):
+        self.maquina.pasarUnTiempo()
 
-for child in mainframe.winfo_children(): 
-    child.grid_configure(padx=5, pady=5)
+        self.actualizarTextoCinta()
 
-root.bind("<space>", avanzarUnMomento)
-root.bind("<Shift_L><space>",avanzarHastaElFinal)
-root.bind("<Button-1>", enfocarRoot)
+        self.actualizarTextoEstado()
 
-root.bind("<Shift_L>R",reiniciarMaquina)
-root.bind("<Shift_L>r",reiniciarMaquina)
+        self.actualizarLabelUltimaAccion()
 
-root.mainloop()
+    def avanzarHastaElFinal(self,*args):
+        while(not self.maquina.ejecucionDetenida):
+            self.maquina.pasarUnTiempo()
+            self.textoCinta.set(self.maquina.obtenerStringCintaActualConOffset(miOffset))
+
+        self.actualizarTextoEstado()
+        self.actualizarLabelUltimaAccion()
+
+    def actualizarTextoEstado(self):
+        self.textoEstado.set(self.maquina.estado())
+
+    def actualizarTextoCinta(self):
+        self.textoCinta.set(self.maquina.obtenerStringCintaActualConOffset(miOffset))
+
+    def actualizarLabelUltimaAccion(self):
+        self.textoUltimaAccion.set("".join(["ultima acción: ",self.maquina.ultimaAccion()]))
+
+    def seleccionarArchivo(self,*args):
+        direccionArchivoNueva = askopenfilename() # show an "Open" dialog box and return the path to the selected file
+        # print("DEBUG: " + str(direccionArchivoNueva == ""))
+        # print("DEBUG: " + direccionArchivoNueva)
+
+        if direccionArchivoNueva != "":
+            self.direccionArchivo = direccionArchivoNueva
+            self.reiniciarMaquina()
+            # print("DEBUG: reiniciando maquina")
+            
+    # maquina.cargarGrafoListaTrayectorias(
+    def reiniciarMaquina(self,*args):
+        self.maquina = None
+        self.maquina = maquinaDeTuring()
+
+        self.maquina.cargarGrafoListaTrayectorias(self.direccionArchivo)
+
+        self.actualizarTextoCinta()
+        self.actualizarTextoEstado()
+        self.actualizarLabelUltimaAccion()
+        
+    def enfocarRoot(self,*args):
+        if self.root.focus_get() != self.root:
+            self.root.focus()
+
+def main():
+    ventana = interfazSimulador()
+
+main()

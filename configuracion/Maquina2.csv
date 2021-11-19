@@ -1,0 +1,16 @@
+#alfabeto;;;
+x;y;;
+#cinta;;;
+xxxxxxxxxxxxxxxxxyyyyyyyyyyyyyxyxyyyyyyyyxyyyxyyxyyyxyyxy;;;
+#posicion cabezal;;;
+0;;;
+#Tabla (estados y transiciones);;;
+#estadoA;#estadoB;#simbolo;#accion
+1;2;x;R
+2;1;x;R
+2;3;y;R
+3;1;y;R
+3;4;x;R
+4;1;x;R
+4;5;y;END
+1;1;y;R

@@ -1,6 +1,6 @@
 import time
 from csv import reader
-from tkinter import Misc
+import copy
 
 class caracteresEspeciales():
     """permite un facil acceso a los caracteres especiales usados en la teoria de la computación."""
@@ -361,7 +361,7 @@ class maquinaDeTuring:
         self.cinta = cinta
 
         self.ejecucionDetenida = False
-
+        
     def comprobarInicializacion(self):
         assert(self.grafo is not None), "maquinaDeTuring: no hay self.grafo"
         assert(self.cinta is not None), "maquinaDeTuring: no hay self.cinta"
@@ -376,7 +376,7 @@ class maquinaDeTuring:
             self.ejecucionDetenida = self.cinta.ejecucionDetenida
         
         else:
-            print("Ejecución detenida")
+            pass
 
         if not self.ejecucionDetenida and not self.cinta is None:
             if self.cinta.ultimaAccion() == "":
