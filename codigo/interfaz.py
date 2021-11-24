@@ -207,7 +207,6 @@ class interfazSimulador:
         
         self.actualizarMaquina()
 
-    # maquina.cargarGrafoListaTrayectorias(
     def reiniciarMaquina(self,*args):
         self.maquina = None
         self.maquina = maquinaDeTuring()

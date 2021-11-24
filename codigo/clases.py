@@ -448,7 +448,9 @@ class maquinaDeTuring:
         else:   
             transiciones = rows[8:]
             
-        alfabeto = rows[1]
+        alfabeto = list(set(rows[1]) - set(""))
+        alfabeto.sort()
+        
         textoCinta = rows[3][0]
         posCabezal = int(rows[5][0])
 
