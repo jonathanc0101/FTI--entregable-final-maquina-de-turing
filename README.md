@@ -12,3 +12,5 @@ Para poder usar el programa de interfaz se requiere la libreria Tkinter con la v
 
 Ejemplo de funcionamiento semi manual (presionando la tecla espacio repetidamente)
 ![segunda versión de la interfaz, ejemplo](https://github.com/jonathanc0101/FTI--entregable-final-maquina-de-turing/blob/imagenes-y-clutter/imagenes/funcionamiento%20espacios.gif)
+
+El programa final se inicia ejecutando programa.pyw en la carpeta principal del proyecto
