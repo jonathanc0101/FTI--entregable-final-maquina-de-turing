@@ -1,5 +1,5 @@
 
-from tkinter import Tk, StringVar, N, W, E, S, ttk, Toplevel, Label
+from tkinter import Message, Tk, StringVar, N, W, E, S, ttk, Toplevel, Label, messagebox
 from tkinter.constants import LEFT
 from tkinter.filedialog import askopenfilename
 
@@ -85,7 +85,7 @@ class interfazSimulador:
         ##si cambiamos el tamaño de fuente a algo distinto de 20 hay que ajustar el coeficiente
         ancho = int((len(self.maquina.cinta.cinta) + miOffset) * (18.5))
 
-        self.root.geometry("".join([str(ancho),"x",str(320)]))
+        self.root.geometry("".join([str(ancho),"x",str(340)]))
         self.root.resizable(0,0)
 
         ##frame principal donde van las cosas
@@ -123,16 +123,24 @@ class interfazSimulador:
         ##button // avanzar un momento
         self.botonAvanzar = ttk.Button(self.mainframe, text="Avanzar un momento en el tiempo", command=self.avanzarUnMomento)
         self.botonAvanzar.grid(column=0, row=4, sticky=(N, S, W, E), columnspan=1)
+        
         ##button 2//avanzar hasta el final
-        self.botonAvanzarFinal =ttk.Button(self.mainframe, text="Avanzar hasta el final", command=self.avanzarHastaElFinal)
-        self.botonAvanzarFinal.grid(column=0, row=5, sticky=(N, S, W, E), columnspan=1)
+        self.botonAvanzarCienPasos =ttk.Button(self.mainframe, text="Avanzar cien pasos", command=self.AvanzarCienPasos)
+        self.botonAvanzarCienPasos.grid(column=0, row=5, sticky=(N, S, W, E), columnspan=1)
+        
         ##button 3//cargar archivo de turing
         self.botonSeleccionarArchivo = ttk.Button(self.mainframe, text="Seleccionar archivo de configuración", command=self.seleccionarArchivo)
         self.botonSeleccionarArchivo.grid(column=0, row=6, sticky=(N, S, W, E), columnspan=1)
+        
         ##button 4//reiniciar maquina
         self.botonReiniciar = ttk.Button(self.mainframe, text="Reiniciar", command=self.reiniciarMaquina)
         self.botonReiniciar.grid(column=0, row=7, sticky=(N, S, W, E), columnspan=1)
         
+        ##button 5//generar cinta aleatoria
+        self.botonCintaAleatoria = ttk.Button(self.mainframe,text = "Generar cinta random", command=self.generarCintaRandom)
+        self.botonCintaAleatoria.grid(column=0, row=8, sticky=(N, S, W, E), columnspan=1)
+
+
         ##polishing
         self.mainframe.columnconfigure(0,weight=0)
 
@@ -141,7 +149,7 @@ class interfazSimulador:
 
     def inicializarBindEventos(self):
         self.root.bind("<space>", self.avanzarUnMomento)
-        self.root.bind("<Shift_L><space>",self.avanzarHastaElFinal)
+        self.root.bind("<Shift_L><space>",self.AvanzarCienPasos)
         self.root.bind("<Button-1>", self.enfocarRoot)
 
         self.root.bind("<Shift_L>R",self.reiniciarMaquina)
@@ -152,12 +160,17 @@ class interfazSimulador:
 
         self.actualizarMaquina()
 
-    def avanzarHastaElFinal(self,*args):
-        while(not self.maquina.ejecucionDetenida):
-            self.maquina.pasarUnTiempo()
-            self.textoCinta.set(self.maquina.obtenerStringCintaActualConOffset(miOffset))
-
+    def AvanzarCienPasos(self,*args):
+        for i in range(100):
+            ejecucionFinalizada = self.maquina.ejecucionDetenida
+            if (not ejecucionFinalizada):
+                self.maquina.pasarUnTiempo()
+    
         self.actualizarMaquina()
+
+        if ejecucionFinalizada:
+            messagebox.showinfo(title="Máquina de Turing", message="Ejecución finalizada")
+
 
     def actualizarMaquina(self):
         self.actualizarTextoCinta()
@@ -187,13 +200,10 @@ class interfazSimulador:
 
     def seleccionarArchivo(self,*args):
         direccionArchivoNueva = askopenfilename() # show an "Open" dialog box and return the path to the selected file
-        # print("DEBUG: " + str(direccionArchivoNueva == ""))
-        # print("DEBUG: " + direccionArchivoNueva)
 
         if direccionArchivoNueva != "":
             self.direccionArchivo = direccionArchivoNueva
             self.reiniciarMaquina()
-            # print("DEBUG: reiniciando maquina")
         
         self.actualizarMaquina()
 
@@ -207,14 +217,18 @@ class interfazSimulador:
         self.actualizarTextoCinta()
         self.actualizarTextoEstado()
         self.actualizarLabelUltimaAccion()
-        
+    
+    def generarCintaRandom(self, *args):
+        self.maquina.generarCintaRandom()
+        self.actualizarMaquina()
+    
     def enfocarRoot(self,*args):
         if self.root.focus_get() != self.root:
             self.root.focus()
 
     def aniadirTooltips(self, wrapLengthVar=200):
         CreateToolTip(self.botonAvanzar, "Espacio")
-        CreateToolTip(self.botonAvanzarFinal, "Shift + Espacio")
+        CreateToolTip(self.botonAvanzarCienPasos, "Shift + Espacio")
 
         CreateToolTip(self.botonReiniciar, "Shift + R")
 

@@ -1,4 +1,4 @@
-#alfabeto;;;
+#alfabeto;formato:lista;;
 x;y;;
 #cinta;;;
 xxxxxxxxxxxxxxxxxyyyyyyyyyyyyyxyxyyyyyyyyxyyyxyyxyyyxyyxy;;;
@@ -14,3 +14,7 @@ xxxxxxxxxxxxxxxxxyyyyyyyyyyyyyxyxyyyyyyyyxyyyxyyxyyyxyyxy;;;
 4;1;x;R
 4;5;y;END
 1;1;y;R
+2;1;lambda;R
+3;1;lambda;R
+4;1;lambda;R
+1;1;lambda;R

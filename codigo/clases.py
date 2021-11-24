@@ -1,6 +1,6 @@
 import time
 from csv import reader
-import copy
+from random import choice, randint
 
 class caracteresEspeciales():
     """permite un facil acceso a los caracteres especiales usados en la teoria de la computación."""
@@ -250,6 +250,17 @@ class CintayCabezal:
         else:
             return ""
 
+    def generarCintaRandom(self):
+        nuevacinta = ""
+
+        for i in range(randint(1,100)):
+            nuevacinta = "".join([nuevacinta, choice(self.universoDeSimbolos)])
+        
+        self.cinta = nuevacinta
+        self.pos = 0
+        self.accionAnterior = ""
+        self.ejecucionDetenida = False
+
 class GrafoTuring:
     """modela la clase grafo con el uso de listas de
     adyacencia"""
@@ -409,11 +420,37 @@ class maquinaDeTuring:
             
             # extracting each data row one by one
             rows = [row for row in csvreader]
-    
+
+        if rows[0][1] != "formato:lista":
+            
+            encabezadosMatriz = rows[7][1:]
+            # print("DEBUG ENCABEZADOS: ", str(encabezadosMatriz))
+            matriz = [row[1:] for row in rows[8:]]
+            transiciones = []
+
+            # print("DEBUG: ", str(matriz))
+
+            for i in range(len(matriz)):
+                nodoA = str(i + 1)
+                # print("DEBUG: NODO A", str(nodoA))
+
+                for j in range(len(matriz[0])):
+
+                    if matriz[i][j] != "":
+
+                        nodoB = matriz[i][j].split(",")[0]
+
+                        caracterARecibir = encabezadosMatriz[j]
+                        accionAEfectuar = matriz[i][j].split(",")[1]
+
+                        transiciones.append([nodoA,nodoB,caracterARecibir,accionAEfectuar])
+                
+        else:   
+            transiciones = rows[8:]
+            
         alfabeto = rows[1]
         textoCinta = rows[3][0]
         posCabezal = int(rows[5][0])
-        transiciones = rows[8:]
 
         ##cargamos la cinta
         cinta.universoDeSimbolos = alfabeto
@@ -463,3 +500,9 @@ class maquinaDeTuring:
 
     def posicionCabezal(self) -> str:
         return str(self.cinta.pos)
+
+    def generarCintaRandom(self) -> None:
+        self.cinta.generarCintaRandom()
+        self.grafo.nodoActual = 1
+        self.ejecucionDetenida = False
+    

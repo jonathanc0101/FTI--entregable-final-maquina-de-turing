@@ -1,0 +1,15 @@
+#alfabeto;;;;;;;;;;;;;
+a;b;c;d;*;;;;;;;;;
+#cinta;;;;;;;;;;;;;
+abababcbcbca*b*ababababb*abababcbcbca*b*ababababb*;;;;;;;;;;;;;
+#posicion cabezal;;;;;;;;;;;;;
+0;;;;;;;;;;;;;
+#Matriz (estados y transiciones);;;;;;;;;;;;;
+;a;!a;b;!b;c;!c;d;!d;*;!*;delta;!delta;lambda
+1;;;;;;;;;;;;;2,*
+2;;;;;;;;;;;;;3,R
+3;;;;;;;;;;;4,lambda;2,D;
+4;;;;;;;;;;;;;5,L
+5;;;;;;;;;6,D;4,lambda;;;
+6;;;;;;;;;;;;;7,END
+7;;;;;;;;;;;;;
