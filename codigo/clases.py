@@ -450,7 +450,7 @@ class maquinaDeTuring:
             
         alfabeto = list(set(rows[1]) - set(""))
         alfabeto.sort()
-        
+
         textoCinta = rows[3][0]
         posCabezal = int(rows[5][0])
 

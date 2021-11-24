@@ -3,7 +3,10 @@ from tkinter import Message, Tk, StringVar, N, W, E, S, ttk, Toplevel, Label, me
 from tkinter.constants import LEFT
 from tkinter.filedialog import askopenfilename
 
-from clases import maquinaDeTuring
+from pathlib import Path
+from os import getcwd
+
+from codigo.clases import maquinaDeTuring
 
 miOffset = 15
 
@@ -65,7 +68,7 @@ class interfazSimulador:
 
     def __init__(self) -> None:
         
-        self.direccionArchivo = '.\configuracion\Maquina1.csv'
+        self.direccionArchivo =  Path("configuracion/MaquinaEjemplo.csv")
         
         self.maquina = maquinaDeTuring()
         self.maquina.cargarGrafoListaTrayectorias(self.direccionArchivo)
@@ -76,6 +79,9 @@ class interfazSimulador:
 
         self.aniadirTooltips()
         
+        self.iniciarLoop()
+
+    def iniciarLoop(self):
         self.root.mainloop()
 
     def inicializarInterfaz(self):
@@ -199,7 +205,13 @@ class interfazSimulador:
         self.textoPosicionCabezal.set("".join([ "posición: " ,str(self.maquina.posicionCabezal())]))
 
     def seleccionarArchivo(self,*args):
-        direccionArchivoNueva = askopenfilename() # show an "Open" dialog box and return the path to the selected file
+        filetypes = (
+        ('Archivos csv', '*.csv'),
+        ('Todos los archivos', '*.*')
+        )
+
+        # ('archivos csv', 'csv',)
+        direccionArchivoNueva = askopenfilename(initialdir= Path("configuracion"), title = "seleccionar archivo de configuración", filetypes = filetypes)  
 
         if direccionArchivoNueva != "":
             self.direccionArchivo = direccionArchivoNueva
@@ -231,9 +243,4 @@ class interfazSimulador:
 
         CreateToolTip(self.botonReiniciar, "Shift + R")
 
-def main():
-    ventana = interfazSimulador()
 
-
-if __name__ == "__main__":
-    main()
