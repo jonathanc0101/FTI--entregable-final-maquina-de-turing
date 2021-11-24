@@ -8,7 +8,7 @@ Una máquina de Turing es la computadora mas simple que existe, nos ayuda a defi
 El archivo que actualmente demuestra el funcionamiento es el llamado interfaz.py. 
 
 Para poder usar el programa de interfaz se requiere la libreria Tkinter con la version 8.6 en adelante
-![primera versión de la interfaz](https://github.com/jonathanc0101/FTI--entregable-final-maquina-de-turing/blob/imagenes-y-clutter/imagenes/interfaz%202021%2011%2019.PNG)
+![primera versión de la interfaz](https://github.com/jonathanc0101/FTI--entregable-final-maquina-de-turing/blob/imagenes-y-clutter/imagenes/interfaz%202021%2011%2024.PNG)
 
 Ejemplo de funcionamiento semi manual (presionando la tecla espacio repetidamente)
 ![segunda versión de la interfaz, ejemplo](https://github.com/jonathanc0101/FTI--entregable-final-maquina-de-turing/blob/imagenes-y-clutter/imagenes/funcionamiento%20espacios.gif)
