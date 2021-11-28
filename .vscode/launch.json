@@ -6,12 +6,12 @@
     "configurations": [
         
         {
-            "name": "Python: Archivo actual",
+            "name": "Python: programa.pyw",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
+            "program": "programa.pyw",
             "console": "integratedTerminal",
-            "cwd": "C:\\Users\\jonathan\\Desktop\\Universidad\\cursado UNPSJB\\sexto cuatrimestre\\fundamentos teoricos de informatica\\entregable final maquina de turing"
+            "cwd": "C:\\Users\\jonathan\\Desktop\\Universidad\\cursado UNPSJB\\sexto cuatrimestre\\fundamentos teoricos de informatica(7)(9)(8)\\entregable final maquina de turing"
         }
 
 

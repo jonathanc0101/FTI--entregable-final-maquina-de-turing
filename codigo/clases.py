@@ -21,6 +21,12 @@ class CintayCabezal:
         self.ejecucionDetenida = False
         self.accionAnterior = ""
 
+        self.universoRealDeSimbolos = set(self.chars.delta)
+
+    def asignarUniverso(self, universo):
+        self.universoDeSimbolos = universo
+        self.universoRealDeSimbolos = set(self.universoDeSimbolos) | set(self.chars.delta)
+
     def comprobarInicializacion(self):
         assert(self.universoDeSimbolos is not None), "CintayCabezal: no hay self.universoDeSimbolos"
         assert(self.pos is not None), "CintayCabezal: no hay self.pos"
@@ -36,6 +42,7 @@ class CintayCabezal:
             self.cinta = "".join([self.cinta, self.chars.delta])
 
         # print("DEBUG: pos: " + str(self.pos) + "len: " + str(len(self.cinta)))
+    
     def anterior(self):
         self.comprobarInicializacion()
 
@@ -45,7 +52,6 @@ class CintayCabezal:
         if self.pos == -1:
             self.cinta = "".join([self.chars.delta, self.cinta])
             self.pos = 0
-
 
     def actual(self) -> chr:
         self.comprobarInicializacion()
@@ -254,7 +260,7 @@ class CintayCabezal:
         nuevacinta = ""
 
         for i in range(randint(1,100)):
-            nuevacinta = "".join([nuevacinta, choice(self.universoDeSimbolos)])
+            nuevacinta = "".join([nuevacinta, choice(list(self.universoRealDeSimbolos))])
         
         self.cinta = nuevacinta
         self.pos = 0
@@ -451,12 +457,12 @@ class maquinaDeTuring:
         alfabeto = list(set(rows[1]) - set(""))
         alfabeto.sort()
 
-        textoCinta = rows[3][0]
+        textoCinta = rows[3][0].replace("delta", caracteresEspeciales().delta)
         posCabezal = int(rows[5][0])
 
         ##cargamos la cinta
-        cinta.universoDeSimbolos = alfabeto
-        cinta.cinta = textoCinta 
+        cinta.cinta = textoCinta
+        cinta.asignarUniverso(alfabeto)
         cinta.pos = posCabezal
 
         #grafo
