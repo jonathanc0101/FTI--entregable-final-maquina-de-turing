@@ -2,13 +2,15 @@
 from tkinter import Message, Tk, StringVar, N, W, E, S, ttk, Toplevel, Label, messagebox
 from tkinter.constants import LEFT
 from tkinter.filedialog import askopenfilename
-
+    
 from pathlib import Path
 from os import getcwd
 
 from codigo.clases import maquinaDeTuring
 
 miOffset = 15
+ubicacionIcono = Path('icono/original.ico')
+
 
 class CreateToolTip(object):
     """
@@ -83,11 +85,14 @@ class interfazSimulador:
 
     def iniciarLoop(self):
         self.root.mainloop()
-
+        
     def inicializarInterfaz(self):
         self.root = Tk()
         self.root.title("Simulador de máquina de Turing")
         
+        #colocamos icono
+        self.root.iconbitmap(ubicacionIcono)    
+
         ##si cambiamos el tamaño de fuente a algo distinto de 20 hay que ajustar el coeficiente
         ancho = int((len(self.maquina.cinta.cinta) + miOffset) * (18.5))
 
